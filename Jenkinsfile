@@ -8,35 +8,22 @@ pipeline {
             }
         }
 
-        stage('Deploy to Web') {
+        stage('Build') {
             steps {
-                script {
-                    // Copy project files to nginx web root
-                    sh 'sudo cp -r * /var/www/html/'
-                }
+                sh 'echo "<h1>Hello from Jenkins Pipeline and sherry</h1>" > index.html'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'index.html', fingerprint: true
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'sudo cp index.html /var/www/html/'
             }
         }
     }
 }
-pipeline {
-  agent any
-
-  stages {
-    stage('Build') {
-      steps {
-        sh 'echo "<h1>Hello from Jenkins Pipeline</h1>" > index.html'
-      }
-    }
-
-    stage('Archive') {
-      steps {
-        archiveArtifacts artifacts: 'index.html', fingerprint: true
-      }
-    }
-  }
-}
-    stage('Deploy') {
-      steps {
-        sh 'sudo cp index.html /var/www/html/'
-      }
-    }
